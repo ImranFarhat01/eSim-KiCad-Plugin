@@ -1,4 +1,4 @@
-# Known Limitations — eSim-BRIDGE + eSim-SPICE
+# Known Limitations - eSim-BRIDGE + eSim-SPICE
 
 **Version:** eSim-BRIDGE v2.1.0 / eSim-SPICE v1.0.0
 **Platform:** KiCad 8.0/9.x + eSim 2.5 + ngspice 35
@@ -10,11 +10,11 @@ This document comprehensively lists all known limitations of the plugin suite, w
 
 ## 1. Component Simulation Limitations
 
-### 1.1 Microcontrollers (MCUs) — MISSING Status is Expected and Correct
+### 1.1 Microcontrollers (MCUs) - MISSING Status is Expected and Correct
 
 **Affected components:** ATtiny85, ATmega328P (Arduino), PIC16F, STM32, ESP32, and all MCUs.
 
-**Why it cannot be simulated:** Microcontrollers execute firmware instructions — they are digital state machines driven by clock cycles. ngspice is an analog circuit simulator operating on continuous-time differential equations (Modified Nodal Analysis). The fundamental computational models are incompatible. No SPICE model for any MCU exists anywhere in the industry — not in eSim, not in any manufacturer datasheet library, not in any commercial SPICE product.
+**Why it cannot be simulated:** Microcontrollers execute firmware instructions - they are digital state machines driven by clock cycles. ngspice is an analog circuit simulator operating on continuous-time differential equations (Modified Nodal Analysis). The fundamental computational models are incompatible. No SPICE model for any MCU exists anywhere in the industry - not in eSim, not in any manufacturer datasheet library, not in any commercial SPICE product.
 
 **Plugin behavior:** eSim-SPICE correctly reports these as MISSING. eSim-BRIDGE comments them out in the generated SPICE file with a warning. When an MCU is the central hub of a schematic (all other components connect through it), the entire schematic cannot be simulated.
 
@@ -22,11 +22,11 @@ This document comprehensively lists all known limitations of the plugin suite, w
 
 ---
 
-### 1.2 Digital ICs (74xx / CMOS 40xx Series) — Partial Support Only
+### 1.2 Digital ICs (74xx / CMOS 40xx Series) - Partial Support Only
 
 **Affected components:** 7400, 7402, 7404, 7408, 7432, 74HC86, CD4011, CD4093, and all TTL/CMOS digital logic ICs.
 
-**Why analog simulation is problematic:** 74xx ICs are designed for binary operation. ngspice is an analog simulator — it can technically simulate transistor-level SPICE models of these gates, but:
+**Why analog simulation is problematic:** 74xx ICs are designed for binary operation. ngspice is an analog simulator - it can technically simulate transistor-level SPICE models of these gates, but:
 - eSim's SN74LS00 subcircuit depends on multiple companion `.lib` files (NPN.lib, PNP.lib, etc.) in the same folder. These paths are hardcoded relative to eSim's internal `SubcircuitLibrary/` directory and fail when injected into a standalone `.cir` file.
 - Simulating digital circuits in analog mode is extremely slow and prone to convergence failures.
 - Industry-standard practice is to use dedicated digital simulators for logic-level work.
@@ -37,33 +37,33 @@ This document comprehensively lists all known limitations of the plugin suite, w
 
 ---
 
-### 1.3 Condenser Microphones — No SPICE Model Exists
+### 1.3 Condenser Microphones - No SPICE Model Exists
 
 **Affected components:** Any component with `MK` prefix (Microphone_Condenser, etc.).
 
-**Why no model exists:** A condenser microphone is an acoustic transducer — it converts sound pressure waves into electrical signals. SPICE models circuit elements, not acoustic phenomena. There is no standard SPICE model for any microphone type.
+**Why no model exists:** A condenser microphone is an acoustic transducer - it converts sound pressure waves into electrical signals. SPICE models circuit elements, not acoustic phenomena. There is no standard SPICE model for any microphone type.
 
-**Plugin behavior:** eSim-BRIDGE approximates a microphone as an AC voltage source: `VMK1 node 0 AC 0.01 SIN(0 0.01 1k)` — a 10mV peak signal at 1kHz, representing typical speech-frequency input. The positive terminal is the non-GND node, negative is GND.
+**Plugin behavior:** eSim-BRIDGE approximates a microphone as an AC voltage source: `VMK1 node 0 AC 0.01 SIN(0 0.01 1k)` - a 10mV peak signal at 1kHz, representing typical speech-frequency input. The positive terminal is the non-GND node, negative is GND.
 
 ---
 
-### 1.4 Light-Dependent Resistors (LDRs) — Fixed Value Only
+### 1.4 Light-Dependent Resistors (LDRs) - Fixed Value Only
 
 **Affected components:** Any R-prefix component whose value field contains spaces or non-SPICE strings (e.g., "5mm LDR").
 
 **Why it is limited:** ngspice requires a fixed numeric resistance value. Dynamic resistance behavior requires a behavioral (B-element) model not yet implemented.
 
-**Plugin behavior:** eSim-BRIDGE sanitizes R-prefix values with regex — everything after the first space is stripped. If the remaining value is not a valid SPICE resistance expression, it falls back to `1k` (bright-light assumption).
+**Plugin behavior:** eSim-BRIDGE sanitizes R-prefix values with regex - everything after the first space is stripped. If the remaining value is not a valid SPICE resistance expression, it falls back to `1k` (bright-light assumption).
 
 **Workaround:** Set the LDR value to a fixed numeric resistance (e.g., `10k`) before simulating.
 
 ---
 
-### 1.5 Transformers — Manual Subcircuit Required
+### 1.5 Transformers - Manual Subcircuit Required
 
 **Affected components:** T-prefix components.
 
-**Why it is limited:** Transformers require a two-coupled-inductor model (`K` element) with both winding inductances and coupling coefficient — values not available from a standard KiCad value field.
+**Why it is limited:** Transformers require a two-coupled-inductor model (`K` element) with both winding inductances and coupling coefficient - values not available from a standard KiCad value field.
 
 **Plugin behavior:** eSim-BRIDGE generates a commented placeholder and reports as unsupported.
 
@@ -78,7 +78,7 @@ K1 L1 L2 0.99
 
 ---
 
-### 1.6 Operating Point Analysis — No Waveform Graph
+### 1.6 Operating Point Analysis - No Waveform Graph
 
 **Why it is limited:** eSim 2.5's plotter cannot display `.op` results graphically. The `.op` analysis produces a single set of DC node voltages, not a time-varying dataset.
 
@@ -86,7 +86,7 @@ K1 L1 L2 0.99
 
 ---
 
-### 1.7 Transfer Function Analysis — No Waveform Graph
+### 1.7 Transfer Function Analysis - No Waveform Graph
 
 **Why it is limited:** `.tf` produces a scalar result (gain + impedances), not a waveform dataset.
 
@@ -94,9 +94,9 @@ K1 L1 L2 0.99
 
 ---
 
-### 1.8 Sensitivity Analysis — Requires DC Operating Point
+### 1.8 Sensitivity Analysis - Requires DC Operating Point
 
-**Why it is limited:** `.sens` computes DC sensitivity — it requires a non-zero DC operating point to linearize around. If the source has `dc=0` (typical for sine sources), all sensitivities will be zero.
+**Why it is limited:** `.sens` computes DC sensitivity - it requires a non-zero DC operating point to linearize around. If the source has `dc=0` (typical for sine sources), all sensitivities will be zero.
 
 **Plugin behavior:** A note is displayed in the results popup: "Sensitivity requires a DC operating point. If all values are zero, add a DC value to your source (e.g. change V1 dc=0 to dc=1)."
 
@@ -114,7 +114,7 @@ K1 L1 L2 0.99
 
 **Plugin behavior:** eSim-BRIDGE attempts to delete stale `.raw` files before launching eSim. However, the file may be re-created during the eSim session before the plotter reads it.
 
-**Resolution:** Dismiss the popup and click **Simulate** again. The simulation completes successfully — this is purely cosmetic.
+**Resolution:** Dismiss the popup and click **Simulate** again. The simulation completes successfully - this is purely cosmetic.
 
 **Cannot be fixed from within the plugin:** The error occurs inside eSim's plotter code, which runs in a separate process after eSim-BRIDGE has already exited.
 
@@ -138,7 +138,7 @@ K1 L1 L2 0.99
 
 ## 3. Analysis-Specific Limitations
 
-### 3.1 Sensitivity Analysis — Resistor Values Near Zero
+### 3.1 Sensitivity Analysis - Resistor Values Near Zero
 
 **Description:** ngspice's `.sens` returns sensitivity with respect to conductance (1/R), not resistance. For purely resistive circuits, R1/R2/R3 values may show near-zero sensitivity while `v1` (the source sensitivity) shows the correct voltage divider gain.
 
@@ -146,7 +146,7 @@ K1 L1 L2 0.99
 
 ---
 
-### 3.2 FFT — Limited Frequency Resolution
+### 3.2 FFT - Limited Frequency Resolution
 
 **Description:** The FFT frequency resolution depends on the number of time-domain data points. With default Transient settings (Step=0.1ms, Stop=10ms), you get approximately 100 data points, which limits FFT resolution.
 
@@ -154,15 +154,15 @@ K1 L1 L2 0.99
 
 ---
 
-### 3.3 Bode Plot — Phase Shows Zero for Resistive Circuits
+### 3.3 Bode Plot - Phase Shows Zero for Resistive Circuits
 
-**Description:** Resistive voltage dividers show 0° phase at all frequencies in the Bode plot. This is correct physics — pure resistors introduce no phase shift.
+**Description:** Resistive voltage dividers show 0° phase at all frequencies in the Bode plot. This is correct physics - pure resistors introduce no phase shift.
 
 **This is correct behavior.** The Bode plot becomes meaningful when capacitors or inductors are added to the circuit.
 
 ---
 
-### 3.4 Parametric Sweep — Only R/C/L Components
+### 3.4 Parametric Sweep - Only R/C/L Components
 
 **Description:** The parametric sweep can only vary R, C, or L components found in the `.cir.out` file. Voltage sources, current sources, and other components cannot be swept.
 
@@ -208,13 +208,13 @@ rm -rf ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/__pycache__
 
 | Limitation | Severity | Fix Available | Workaround |
 |---|---|---|---|
-| MCUs (ATtiny85, etc.) | Fundamental — industry-wide | No | Dedicated MCU simulators |
+| MCUs (ATtiny85, etc.) | Fundamental - industry-wide | No | Dedicated MCU simulators |
 | 74xx digital ICs | Industry-wide constraint | No | Logisim Evolution / Icarus Verilog |
 | Condenser microphone | No SPICE model exists | No | 10mV AC source approximation |
 | LDR value with spaces | Parse issue | Resolved | Sanitized to 1k fallback |
 | Transformers | Needs manual subcircuit | Partial | Add to `~/.esim-bridge/models/` |
-| .op analysis — no graph | eSim 2.5 plotter limit | No | Voltages shown in popup |
-| .tf analysis — no graph | Scalar result, no waveform | No | Gain/impedance shown in popup |
+| .op analysis - no graph | eSim 2.5 plotter limit | No | Voltages shown in popup |
+| .tf analysis - no graph | Scalar result, no waveform | No | Gain/impedance shown in popup |
 | Sensitivity zeros | DC operating point needed | User action | Set dc=1 on source |
 | UTF-8 popup (cosmetic) | eSim 2.5 internal bug | No | Dismiss and re-simulate |
 | Manual project selection | eSim 2.5 GUI limit | No | Double-click project in eSim |
@@ -223,7 +223,7 @@ rm -rf ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/__pycache__
 | Linux only | eSim 2.5 platform constraint | No | Use VirtualBox Ubuntu |
 | eSim path hardcoded | Installation requirement | Partial | Edit `ESimLauncher` constants |
 | FFT limited resolution | Data point count | User action | Increase simulation duration |
-| Parametric sweep — R/C/L only | Implementation scope | Partial | Voltage source sweep not supported |
+| Parametric sweep - R/C/L only | Implementation scope | Partial | Voltage source sweep not supported |
 
 ---
 
