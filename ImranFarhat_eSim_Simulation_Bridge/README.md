@@ -24,7 +24,7 @@ One-click simulation bridge. Converts KiCad schematics to valid SPICE format, ru
 
 Automatic SPICE model linker. Scans eSim's built-in open-source library (1,300+ files) and automatically resolves and injects SPICE models for every active component in the schematic. Eliminates all manual model selection.
 
-Both files together form **one plugin** installed as a single KiCad package.
+These two files together form **one single KiCad plugin** installed as a single package.
 
 ---
 
@@ -207,8 +207,8 @@ ls ~/.esim/env/bin/python3
 
 ```bash
 cd ~
-git clone https://github.com/ImranFarhat01/KiCad-Plugin-ImranFarhat.git
-cp -r ~/KiCad-Plugin-ImranFarhat/KiCad_Plugin \
+git clone https://github.com/FOSSEE/eSim-KiCad-Plugin.git
+cp -r ~/eSim-KiCad-Plugin/ImranFarhat_eSim_Simulation_Bridge/eSim_KiCad_Plugin \
     ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge
 ```
 
@@ -251,8 +251,8 @@ wget https://static.fossee.in/esim/installation-files/eSim-2.5.zip
 unzip eSim-2.5.zip && cd eSim-2.5
 chmod +x install-eSim.sh && ./install-eSim.sh --install
 
-cd ~ && git clone https://github.com/ImranFarhat01/KiCad-Plugin-ImranFarhat.git
-cp -r ~/KiCad-Plugin-ImranFarhat/KiCad_Plugin \
+cd ~ && git clone https://github.com/FOSSEE/eSim-KiCad-Plugin.git
+cp -r ~/eSim-KiCad-Plugin/ImranFarhat_eSim_Simulation_Bridge/eSim_KiCad_Plugin \
     ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge
 
 sed -i "s/imran-farhat/$(whoami)/g" \
@@ -291,7 +291,7 @@ To test Sensitivity Analysis, set V1 dc=1 to provide a DC operating point.
 ## File Structure
 
 ```
-KiCad_Plugin/
+eSim_KiCad_Plugin/
 ├── esim_bridge.py          # eSim-BRIDGE v2.1.0 - main plugin
 ├── esim_spice_linker.py    # eSim-SPICE v1.0.0 - model auto-linker
 ├── icon.png                # Toolbar icon
