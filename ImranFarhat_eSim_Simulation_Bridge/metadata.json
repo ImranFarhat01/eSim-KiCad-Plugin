@@ -12,9 +12,9 @@
     },
     "license": "GPL-3.0",
     "resources": {
-        "homepage": "https://github.com/ImranFarhat01/KiCad-Plugin-ImranFarhat",
-        "bugtracker": "https://github.com/ImranFarhat01/KiCad-Plugin-ImranFarhat/issues",
-        "documentation": "https://github.com/ImranFarhat01/KiCad-Plugin-ImranFarhat/blob/main/README.md"
+        "homepage": "https://github.com/FOSSEE/eSim-KiCad-Plugin",
+        "bugtracker": "https://github.com/FOSSEE/eSim-KiCad-Plugin/issues",
+        "documentation": "https://github.com/FOSSEE/eSim-KiCad-Plugin/blob/main/ImranFarhat_eSim_Simulation_Bridge/README.md"
     },
     "versions": [
         {
@@ -24,7 +24,7 @@
             "kicad_version_max": "9.99",
             "platforms": ["linux"],
             "download_sha256": "",
-            "download_url": "https://github.com/ImranFarhat01/KiCad-Plugin-ImranFarhat/archive/refs/heads/main.zip",
+            "download_url": "https://github.com/FOSSEE/eSim-KiCad-Plugin/archive/refs/heads/main.zip",
             "download_size": 0,
             "install_size": 204800
         }
