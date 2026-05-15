@@ -2,6 +2,10 @@
 
 Complete step-by-step installation instructions for all supported environments.
 
+**Plugin:** eSim Simulation Bridge v1.0.0  
+**Environment:** KiCad 8.0 + eSim 2.5 + ngspice 42  
+**Platform:** Ubuntu Linux 24.04 LTS
+
 ---
 
 ## Environment Options
@@ -99,49 +103,45 @@ PYTHONPATH=/home/$(whoami)/Downloads/eSim-2.5/src \
 # eSim should open. Close it after confirming.
 ```
 
-### A4 - Install the Plugin
+### A4 - Clone and Install the Plugin
 
 ```bash
 cd ~
 git clone https://github.com/FOSSEE/eSim-KiCad-Plugin.git
-cp -r ~/eSim-KiCad-Plugin/ImranFarhat_eSim_Simulation_Bridge/eSim_KiCad_Plugin \
-    ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge
 
-# Verify files are present
+mkdir -p ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge
+cp -r ~/eSim-KiCad-Plugin/ImranFarhat_eSim_Simulation_Bridge/eSim_KiCad_Plugin/* \
+    ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/
+
+# Verify all files are present
 ls -la ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/
 ```
 
-### A5 - Fix Username ⚠️ MANDATORY
-
-The plugin was developed with the username `imran-farhat`. Replace with yours:
-
-```bash
-sed -i "s/imran-farhat/$(whoami)/g" \
-    ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/esim_bridge.py
-
-# Verify - must return NO output
-grep "imran-farhat" \
-    ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/esim_bridge.py
+Expected files:
+```
+__init__.py
+esim_bridge.py
+esim_spice_linker.py
+icon.png
+configuration/
+    __init__.py
+    Appconfig.py
+ngspiceSimulation/
+    __init__.py
+    plot_window.py
+    data_extraction.py
+    plotting_widgets.py
 ```
 
-### A6 - Fix `__init__.py` and Create eSim Workspace
+### A5 - Create eSim Workspace
 
 ```bash
-# Fix __init__.py
-echo "from .esim_bridge import ESimBridgePlugin" > \
-    ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/__init__.py
-
-# Confirm it is correct
-cat ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/__init__.py
-# Must show: from .esim_bridge import ESimBridgePlugin
-
-# Create eSim workspace directory
 mkdir -p ~/eSim-Workspace
 echo '{"/home/'$(whoami)'/eSim-Workspace/esim_bridge_project": []}' \
     > ~/eSim-Workspace/.projectExplorer.txt
 ```
 
-### A7 - Launch KiCad and Verify Plugin
+### A6 - Launch KiCad and Verify Plugin
 
 1. Open KiCad from the Applications menu
 2. Open or create a project (File → New → Project)
@@ -149,7 +149,12 @@ echo '{"/home/'$(whoami)'/eSim-Workspace/esim_bridge_project": []}' \
 4. Look for the **eSim Bridge icon** in the PCB Editor toolbar
 5. If not visible: **Tools → External Plugins → Refresh Plugins**
 
-✅ Plugin loaded successfully if the eSim FOSSEE logo icon appears in the toolbar, or 'eSim Simulation Bridge' appears under **Tools → External Plugins**.
+✅ Plugin loaded successfully if the eSim Simulation Bridge icon appears in the toolbar.
+
+> **After every code change**, clear the Python bytecode cache before restarting KiCad:
+> ```bash
+> rm -rf ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/__pycache__
+> ```
 
 ---
 
@@ -163,7 +168,7 @@ Apply the conflict fix from A2 if `libngspice-kicad` errors appear during KiCad 
 
 ## Option C - WSL 2 with WSLg (Windows 11)
 
-> ⚠️ **WSL Warning:** All three applications (KiCad, eSim, ngspice) are graphical. WSL without WSLg display support will not work.
+> ⚠️ All three applications (KiCad, eSim, ngspice) are graphical. WSL without WSLg display support will not work.
 
 ### C1 - Verify GUI Support
 
@@ -188,7 +193,7 @@ sudo dpkg -i --force-overwrite /var/cache/apt/archives/ngspice_*.deb
 sudo apt-get install -f -y
 ```
 
-### C3-C7 - Follow Option A Steps A3-A7
+### C3-C6 - Follow Option A Steps A3-A6
 
 All remaining steps are identical to the VirtualBox installation.
 
@@ -211,18 +216,11 @@ chmod +x install-eSim.sh && ./install-eSim.sh --install
 # Step 3: Clone and install plugin
 cd ~
 git clone https://github.com/FOSSEE/eSim-KiCad-Plugin.git
-cp -r ~/eSim-KiCad-Plugin/ImranFarhat_eSim_Simulation_Bridge/eSim_KiCad_Plugin \
-    ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge
+mkdir -p ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge
+cp -r ~/eSim-KiCad-Plugin/ImranFarhat_eSim_Simulation_Bridge/eSim_KiCad_Plugin/* \
+    ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/
 
-# Step 4: Fix username
-sed -i "s/imran-farhat/$(whoami)/g" \
-    ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/esim_bridge.py
-
-# Step 5: Fix __init__.py
-echo "from .esim_bridge import ESimBridgePlugin" > \
-    ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/__init__.py
-
-# Step 6: Create workspace
+# Step 4: Create workspace
 mkdir -p ~/eSim-Workspace
 echo '{"/home/'$(whoami)'/eSim-Workspace/esim_bridge_project": []}' \
     > ~/eSim-Workspace/.projectExplorer.txt
@@ -244,12 +242,12 @@ echo "=== eSim Python ===" && ls ~/.esim/env/bin/python3
 echo "=== eSim Application ===" && ls ~/Downloads/eSim-2.5/src/frontEnd/Application.py
 echo "=== Plugin files ===" && \
     ls -la ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/
+echo "=== ngspiceSimulation package ===" && \
+    ls ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/ngspiceSimulation/
+echo "=== configuration package ===" && \
+    ls ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/configuration/
 echo "=== __init__.py ===" && \
     cat ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/__init__.py
-echo "=== Username fix ===" && \
-    grep "imran-farhat" \
-    ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/esim_bridge.py \
-    && echo "WARNING: Username not fixed!" || echo "OK: No old username found"
 echo "=== eSim Workspace ===" && ls ~/eSim-Workspace/
 ```
 
@@ -263,12 +261,8 @@ When a new version is released:
 cd ~/eSim-KiCad-Plugin
 git pull
 
-cp -r ~/eSim-KiCad-Plugin/ImranFarhat_eSim_Simulation_Bridge/eSim_KiCad_Plugin \
-    ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge
-
-# Re-apply username fix
-sed -i "s/imran-farhat/$(whoami)/g" \
-    ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/esim_bridge.py
+cp -r ~/eSim-KiCad-Plugin/ImranFarhat_eSim_Simulation_Bridge/eSim_KiCad_Plugin/* \
+    ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/
 
 # Clear Python cache
 rm -rf ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/__pycache__
@@ -283,18 +277,20 @@ echo "Update complete - restart KiCad"
 | Problem | Cause | Fix |
 |---|---|---|
 | `kicad-cli: command not found` | KiCad not installed | `sudo apt install kicad -y` |
-| `ngspice: command not found` | Removed during KiCad install | See conflict fix commands above |
+| `ngspice: command not found` | Removed during KiCad install | See conflict fix commands in A2 |
 | `libngspice-kicad` conflict | Both packages own the same file | See conflict fix commands in A2 |
 | Plugin folder missing | Clone or copy failed | Re-clone and re-copy |
 | `esim_bridge.py` is 0 bytes | Git clone got empty file | `rm -rf ~/eSim-KiCad-Plugin && git clone https://github.com/FOSSEE/eSim-KiCad-Plugin.git` |
-| `__init__.py` empty or wrong | File corrupted | Re-run Step 5 / A6 |
+| `ngspiceSimulation/` folder missing | Incomplete copy | Re-run the `cp -r` command in Step 3 |
+| `configuration/` folder missing | Incomplete copy | Re-run the `cp -r` command in Step 3 |
+| `__init__.py` empty or wrong | File corrupted | `echo "from .esim_bridge import ESimBridgePlugin" > ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/__init__.py` |
 | eSim install fails | Incomplete download or permissions | Re-run `./install-eSim.sh --install` |
 | KiCad shows blank icons (VirtualBox) | Wrong display controller | VM Settings → Display → **VMSVGA** + 256 MB + 3D Acceleration |
 | KiCad display errors in WSL | WSLg not working | Use VirtualBox instead |
-| `grep "imran-farhat"` returns lines | sed command not run | Run Step 4 / A5 |
 | Plugin not appearing in toolbar | KiCad not refreshed | Tools → External Plugins → Refresh Plugins |
+| Code changes not taking effect | Stale `.pyc` bytecode cache | `rm -rf ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/__pycache__` |
 
 ---
 
-*Installation guide for eSim-BRIDGE v2.1.0 / eSim-SPICE v1.0.0*
-*Developed by Imran Farhat - FOSSEE IIT Bombay, May 2026*
+*Installation guide for eSim Simulation Bridge v1.0.0*  
+*Developed by Imran Farhat - FOSSEE Semester Long Internship Spring 2026, IIT Bombay*
