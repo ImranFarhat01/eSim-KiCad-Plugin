@@ -332,7 +332,7 @@ ImranFarhat_eSim_Simulation_Bridge/
 ├── INSTALLATION_GUIDE.md
 ├── QUICK_REFERENCE.md
 ├── KNOWN_LIMITATIONS.md
-├── DESIGN_DOCUMENT.docx
+├── DESIGN_DOCUMENT.pdf
 └── metadata.json
 ```
 
