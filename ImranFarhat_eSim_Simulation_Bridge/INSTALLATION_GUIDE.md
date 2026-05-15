@@ -110,7 +110,7 @@ cd ~
 git clone https://github.com/FOSSEE/eSim-KiCad-Plugin.git
 
 mkdir -p ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge
-cp -r ~/eSim-KiCad-Plugin/ImranFarhat_eSim_Simulation_Bridge/eSim_KiCad_Plugin/* \
+cp -r ~/eSim-KiCad-Plugin/ImranFarhat_eSim_Simulation_Bridge/eSim_Simulation_Bridge/* \
     ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/
 
 # Verify all files are present
@@ -217,7 +217,7 @@ chmod +x install-eSim.sh && ./install-eSim.sh --install
 cd ~
 git clone https://github.com/FOSSEE/eSim-KiCad-Plugin.git
 mkdir -p ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge
-cp -r ~/eSim-KiCad-Plugin/ImranFarhat_eSim_Simulation_Bridge/eSim_KiCad_Plugin/* \
+cp -r ~/eSim-KiCad-Plugin/ImranFarhat_eSim_Simulation_Bridge/eSim_Simulation_Bridge/* \
     ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/
 
 # Step 4: Create workspace
@@ -261,7 +261,7 @@ When a new version is released:
 cd ~/eSim-KiCad-Plugin
 git pull
 
-cp -r ~/eSim-KiCad-Plugin/ImranFarhat_eSim_Simulation_Bridge/eSim_KiCad_Plugin/* \
+cp -r ~/eSim-KiCad-Plugin/ImranFarhat_eSim_Simulation_Bridge/eSim_Simulation_Bridge/* \
     ~/.local/share/kicad/8.0/scripting/plugins/esim_bridge/
 
 # Clear Python cache
